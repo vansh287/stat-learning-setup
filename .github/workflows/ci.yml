@@ -1,0 +1,27 @@
+name: PyMC Installation Test
+
+on: [push, pull_request]
+
+jobs:
+  test-pymc:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: stats-learning-env
+          environment-file: env.yml
+          auto-update-conda: true
+          miniforge-variant: Mambaforge  # Faster solver
+          use-mamba: true  # Better dependency resolution
+          channels: conda-forge,defaults
+
+      - name: Verify Installation
+        shell: bash -l {0}  # Important: use login shell
+        run: |
+          conda list pymc
+          python -c "import pymc; print(f'\nSUCCESS! PyMC {pymc.__version__} working')"
+          python -c "import pymc.sampling_jax; print('JAX backend available')"
