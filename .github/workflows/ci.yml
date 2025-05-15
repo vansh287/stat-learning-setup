@@ -1,0 +1,22 @@
+name: Conda Environment CI
+
+on: [push, pull_request]
+
+jobs:
+  test-env:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Setup Conda environment
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: stats-learning-env
+          environment-file: env.yml
+          auto-update-conda: true
+
+      # Verify installation
+      - run: |
+          conda list
+          python -c "import pymc, sklearn; print(f'PyMC {pymc.__version__}, scikit-learn {sklearn.__version__}')"
