@@ -1,0 +1,24 @@
+name: Conda CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          environment-file: env.yml
+          activate-environment: stat-learn-env
+          auto-activate-base: false
+          use-only-tar-bz2: true
+
+      - name: Show installed packages
+        run: conda list
+
+      - name: Test packages
+        run: python -c "import numpy, pandas, sklearn; print('Environment is working!')"
